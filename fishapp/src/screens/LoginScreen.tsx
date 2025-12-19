@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/auth.service'
 
 export default function LoginScreen() {
+    const navigate = useNavigate()
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -16,9 +19,12 @@ export default function LoginScreen() {
 
         if (error) {
             setError(error.message)
+            setLoading(false)
+            return
         }
 
-        setLoading(false)
+        // ✅ Redirection après login
+        navigate('/fishing', { replace: true })
     }
 
     return (
@@ -49,7 +55,10 @@ export default function LoginScreen() {
                 <button
                     type="submit"
                     disabled={loading}
-                    style={styles.button}
+                    style={{
+                        ...styles.button,
+                        opacity: loading ? 0.7 : 1
+                    }}
                 >
                     {loading ? 'Connexion...' : 'Se connecter'}
                 </button>
