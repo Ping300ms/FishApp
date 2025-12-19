@@ -1,41 +1,33 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginScreen from './screens/LoginScreen'
-import { useAuth } from './contexts/AuthContext'
+import ChatScreen from './screens/ChatScreen'
+import ProfileScreen from './screens/ProfileScreen'
+import ProtectedRoute from './routes/ProtectedRoute'
+import Layout from "./components/Layout.tsx";
+import FishScreen from "./screens/FishScreen.tsx";
+import RankingsScreen from "./screens/RankingsScreen.tsx";
 
 export default function App() {
-    const { session, loading, user, signOut } = useAuth()
-
-    if (loading) {
-        return <div>Chargement...</div>
-    }
-
-    if (!session) {
-        return <LoginScreen />
-    }
-
     return (
-        <div style={{ padding: 20 }}>
-            <h1>🎣 FishApp</h1>
+        <BrowserRouter basename="/FishApp">
+            <Routes>
+                <Route path="/login" element={<LoginScreen />} />
 
-            <p>Connecté en tant que : {user?.email}</p>
-
-            {/* 🔴 Bouton de test */}
-            <button
-                onClick={signOut}
-                style={{
-                    padding: '0.5rem 1rem',
-                    background: '#ef4444',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: 6,
-                    cursor: 'pointer'
-                }}
-            >
-                Se déconnecter (test)
-            </button>
-
-            <hr style={{ margin: '2rem 0' }} />
-
-            <div>APP CONNECTÉE 🎉</div>
-        </div>
+                <Route
+                    path="/"
+                    element={
+                        <ProtectedRoute>
+                            <Layout />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route index element={<Navigate to="/fishing" />} />
+                    <Route path="fishing" element={<FishScreen />} />
+                    <Route path="leaderboard" element={<RankingsScreen />} />
+                    <Route path="chat" element={<ChatScreen />} />
+                    <Route path="profile" element={<ProfileScreen />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     )
 }
