@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import LoginScreen from './screens/LoginScreen'
+import { useAuth } from './contexts/AuthContext'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+    const { session, loading, user, signOut } = useAuth()
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    if (loading) {
+        return <div>Chargement...</div>
+    }
+
+    if (!session) {
+        return <LoginScreen />
+    }
+
+    return (
+        <div style={{ padding: 20 }}>
+            <h1>🎣 FishApp</h1>
+
+            <p>Connecté en tant que : {user?.email}</p>
+
+            {/* 🔴 Bouton de test */}
+            <button
+                onClick={signOut}
+                style={{
+                    padding: '0.5rem 1rem',
+                    background: '#ef4444',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: 6,
+                    cursor: 'pointer'
+                }}
+            >
+                Se déconnecter (test)
+            </button>
+
+            <hr style={{ margin: '2rem 0' }} />
+
+            <div>APP CONNECTÉE 🎉</div>
+        </div>
+    )
 }
-
-export default App
