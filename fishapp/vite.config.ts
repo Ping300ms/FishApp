@@ -15,17 +15,18 @@ export default defineConfig({
         theme_color: '#0ea5e9',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/FishApp',
+        start_url: './',
+        scope: './',
         icons: [
           {
-            src: '/pwa-192x192.jpg',
+            src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/jpg'
+            type: 'image/png'
           },
           {
-            src: '/pwa-512x512.jpg',
+            src: 'pwa-512x512.png',
             sizes: '512x512',
-            type: 'image/jpg'
+            type: 'image/png'
           }
         ]
       }
