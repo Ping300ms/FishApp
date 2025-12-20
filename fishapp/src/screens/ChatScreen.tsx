@@ -1,87 +1,12 @@
-import { useEffect, useState, useRef } from 'react'
-import {type ChatMessage, chatService} from '../services/chat.service'
+import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import {supabase} from "../services/supabaseClient.ts";
-import {useProfiles} from "../contexts/UsersContext.tsx";
 import Message from '../components/ChatMessage.tsx';
-import {notificationService} from "../services/notifications.service.ts";
+import {useChat} from "../hooks/useChat.ts";
 
 export default function ChatScreen() {
     const { user } = useAuth()
-    const { getProfile } = useProfiles()
-    const [messages, setMessages] = useState<ChatMessage[]>([])
-    const [newMessage, setNewMessage] = useState('')
-    const [profiles, setProfiles] = useState<Record<string, {
-        username: string
-        avatar_url?: string | null
-    }>>({})
-    const messagesEndRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        const handleMessage = (msg: ChatMessage) => {
-            setMessages(prev => [...prev, msg]);
-            if (msg.user_id === user?.id) return;
-            notificationService.notify(
-                "nouveau message",
-                msg.content,
-                { tag: 'chat' }
-            )
-        }
-
-        const channel = chatService.subscribeToMessages(handleMessage)
-
-        return () => {
-            void supabase.removeChannel(channel)
-        }
-    }, [user, getProfile])
-
-
-
-    // Charger messages initiaux
-    useEffect(() => {
-        chatService.getMessages().then(messages => setMessages(messages))
-    }, [])
-
-    // Scroll automatique
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [messages])
-
-    useEffect(() => {
-        const loadProfiles = async () => {
-            const missingUserIds = Array.from(
-                new Set(
-                    messages
-                        .map(m => m.user_id)
-                        .filter(id => !profiles[id])
-                )
-            )
-
-            if (missingUserIds.length === 0) return
-
-            const fetchedProfiles = await Promise.all(
-                missingUserIds.map(async id => {
-                    const profile = await getProfile(id)
-                    return profile ? [id, profile] : null
-                })
-            )
-
-            setProfiles(prev => ({
-                ...prev,
-                ...Object.fromEntries(
-                    fetchedProfiles.filter(Boolean) as any
-                )
-            }))
-        }
-
-        loadProfiles()
-    }, [messages])
-
-    const handleSend = async () => {
-        if (!newMessage.trim() || !user) return
-        await chatService.sendMessage(user.id, newMessage.trim())
-        setNewMessage('')
-    }
+    const { messages, profiles, sendMessage, messagesEndRef } = useChat(user?.id)
+    const [newMessage, setNewMessage] = useState<string>("")
 
     return (
         <div style={styles.container}>
@@ -89,7 +14,6 @@ export default function ChatScreen() {
                 {messages.map(msg => {
                     const profile = profiles[msg.user_id]
                     if (!profile) return null
-
                     return (
                         <Message
                             key={msg.id}
@@ -102,20 +26,12 @@ export default function ChatScreen() {
                 })}
                 <div ref={messagesEndRef} />
             </div>
-
-            <div style={styles.inputContainer}>
-                <input
-                    type="text"
-                    value={newMessage}
-                    placeholder="Tape ton message..."
-                    onChange={e => setNewMessage(e.target.value)}
-                    style={styles.input}
-                    onKeyDown={e => {
-                        if (e.key === 'Enter') handleSend()
-                    }}
-                />
-                <button onClick={handleSend} style={styles.button}>Envoyer</button>
-            </div>
+            <input
+                type="text"
+                value={newMessage}
+                onChange={e => setNewMessage(e.target.value)}
+                onKeyDown={e => { if(e.key === 'Enter') sendMessage(newMessage) }}
+            />
         </div>
     )
 }
