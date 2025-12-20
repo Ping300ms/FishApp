@@ -1,5 +1,6 @@
 import { useFishing } from '../hooks/useFishing'
 import background from '../assets/background/background.png'
+import FisherCharacter from "../components/FisherCharacter.tsx";
 
 export default function FishingScreen() {
     const {
@@ -11,24 +12,26 @@ export default function FishingScreen() {
         reelInFish,
         handleKeep,
         handleRelease,
-        resetFishing
+        resetFishing,
+        isFishing
     } = useFishing()
 
     return (
         <div style={styles.container} onClick={() => !fishOnLine && !saving && startFishing()}>
-            <h2>🎣 Écran de pêche</h2>
+            <FisherCharacter character="marie" isFishing={isFishing} />
+
             <p>{message}</p>
 
             {fishOnLine && (
                 <div style={styles.actions}>
-                    <button onClick={reelInFish} style={styles.button}>Relever la ligne</button>
-                    <button onClick={handleKeep} style={styles.button} disabled={saving}>Garder</button>
-                    <button onClick={handleRelease} style={styles.button} disabled={saving}>Relâcher</button>
+                    <button onClick={reelInFish}>Relever la ligne</button>
+                    <button onClick={handleKeep} disabled={saving}>Garder</button>
+                    <button onClick={handleRelease} disabled={saving}>Relâcher</button>
                 </div>
             )}
 
             {nothingCaught && (
-                <button onClick={resetFishing} style={styles.button}>Réessayer</button>
+                <button onClick={resetFishing}>Réessayer</button>
             )}
         </div>
     )
