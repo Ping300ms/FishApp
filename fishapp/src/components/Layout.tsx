@@ -8,7 +8,7 @@ export default function Layout() {
     const current = location.pathname.split('/')[1]
 
     return (
-        <div style={{ paddingBottom: 64 }}>
+        <div style={styles.container}>
             <Outlet />
 
             <BottomNavbar
@@ -18,3 +18,11 @@ export default function Layout() {
         </div>
     )
 }
+
+const styles: Record<string, React.CSSProperties> = {
+    container: {
+        width: '100%',
+        height: '100%',
+    },
+}
+

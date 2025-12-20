@@ -1,5 +1,5 @@
-// src/screens/FishingScreen.tsx
 import { useFishing } from '../hooks/useFishing'
+import background from '../assets/background/background.png'
 
 export default function FishingScreen() {
     const {
@@ -36,29 +36,16 @@ export default function FishingScreen() {
 
 const styles: Record<string, React.CSSProperties> = {
     container: {
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '1rem',
-        padding: '1rem',
-        textAlign: 'center',
-        background: '#0ea5e9',
-        color: '#fff'
+        backgroundImage: `url(${background})`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        width: '100%',
+        height: '100%',
     },
     actions: {
-        display: 'flex',
-        gap: '1rem',
-        marginTop: '1rem'
     },
     button: {
-        padding: '0.5rem 1rem',
-        borderRadius: 8,
-        border: 'none',
-        background: '#fff',
-        color: '#0ea5e9',
-        cursor: 'pointer',
-        fontWeight: 'bold'
     }
 }
+
