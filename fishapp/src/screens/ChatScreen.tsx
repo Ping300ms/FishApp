@@ -2,12 +2,21 @@ import { useEffect, useState, useRef } from 'react'
 import {type ChatMessage, chatService} from '../services/chat.service'
 import { useAuth } from '../contexts/AuthContext'
 import {supabase} from "../services/supabaseClient.ts";
+import {useProfiles} from "../contexts/UsersContext.tsx";
+import Message from '../components/ChatMessage.tsx';
 
 export default function ChatScreen() {
     const { user } = useAuth()
     const [messages, setMessages] = useState<ChatMessage[]>([])
     const [newMessage, setNewMessage] = useState('')
+    const [profiles, setProfiles] = useState<Record<string, {
+        username: string
+        avatar_url?: string | null
+    }>>({})
+
     const messagesEndRef = useRef<HTMLDivElement>(null)
+
+    const { getProfile } = useProfiles()
 
     // Charger messages initiaux
     useEffect(() => {
@@ -31,6 +40,36 @@ export default function ChatScreen() {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
+    useEffect(() => {
+        const loadProfiles = async () => {
+            const missingUserIds = Array.from(
+                new Set(
+                    messages
+                        .map(m => m.user_id)
+                        .filter(id => !profiles[id])
+                )
+            )
+
+            if (missingUserIds.length === 0) return
+
+            const fetchedProfiles = await Promise.all(
+                missingUserIds.map(async id => {
+                    const profile = await getProfile(id)
+                    return profile ? [id, profile] : null
+                })
+            )
+
+            setProfiles(prev => ({
+                ...prev,
+                ...Object.fromEntries(
+                    fetchedProfiles.filter(Boolean) as any
+                )
+            }))
+        }
+
+        loadProfiles()
+    }, [messages])
+
     const handleSend = async () => {
         if (!newMessage.trim() || !user) return
         await chatService.sendMessage(user.id, newMessage.trim())
@@ -40,11 +79,20 @@ export default function ChatScreen() {
     return (
         <div style={styles.container}>
             <div style={styles.messages}>
-                {messages.map(msg => (
-                    <div key={msg.id} style={styles.message}>
-                        {msg.content}
-                    </div>
-                ))}
+                {messages.map(msg => {
+                    const profile = profiles[msg.user_id]
+                    if (!profile) return null
+
+                    return (
+                        <Message
+                            key={msg.id}
+                            username={profile.username}
+                            avatarUrl={profile.avatar_url}
+                            content={msg.content}
+                            isOwnMessage={msg.user_id === user?.id}
+                        />
+                    )
+                })}
                 <div ref={messagesEndRef} />
             </div>
 
