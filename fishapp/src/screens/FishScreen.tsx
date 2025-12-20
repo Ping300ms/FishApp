@@ -1,6 +1,8 @@
 import { useFishing } from '../hooks/useFishing'
 import background from '../assets/background/background.png'
 import FisherCharacter from "../components/FisherCharacter.tsx";
+import {useState} from "react";
+import FishPopup from "../components/FishPopup.tsx";
 
 export default function FishingScreen() {
     const {
@@ -16,6 +18,16 @@ export default function FishingScreen() {
         isFishing
     } = useFishing()
 
+    const [showPopup, setShowPopup] = useState(false)
+
+    const handleOpenPopup = () => {
+        setShowPopup(true)
+    }
+    const handleClosePopup = async () => {
+        setShowPopup(false)
+        await handleKeep();
+    }
+
     return (
         <div style={styles.container} onClick={() => !fishOnLine && !saving && startFishing()}>
             <FisherCharacter character="marie" isFishing={isFishing} />
@@ -25,13 +37,22 @@ export default function FishingScreen() {
             {fishOnLine && (
                 <div style={styles.actions}>
                     <button onClick={reelInFish}>Relever la ligne</button>
-                    <button onClick={handleKeep} disabled={saving}>Garder</button>
+                    <button onClick={handleOpenPopup} disabled={saving}>Garder</button>
                     <button onClick={handleRelease} disabled={saving}>Relâcher</button>
                 </div>
             )}
 
             {nothingCaught && (
                 <button onClick={resetFishing}>Réessayer</button>
+            )}
+
+            {fishOnLine && showPopup && (
+                <FishPopup
+                    size={fishOnLine.size}
+                    rarity={fishOnLine.rarity}
+                    model="basicFish"
+                    onClose={handleClosePopup}
+                />
             )}
         </div>
     )
