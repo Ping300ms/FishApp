@@ -4,35 +4,42 @@ import { useAuth } from '../contexts/AuthContext'
 import {supabase} from "../services/supabaseClient.ts";
 import {useProfiles} from "../contexts/UsersContext.tsx";
 import Message from '../components/ChatMessage.tsx';
+import {notificationService} from "../services/notifications.service.ts";
 
 export default function ChatScreen() {
     const { user } = useAuth()
+    const { getProfile } = useProfiles()
     const [messages, setMessages] = useState<ChatMessage[]>([])
     const [newMessage, setNewMessage] = useState('')
     const [profiles, setProfiles] = useState<Record<string, {
         username: string
         avatar_url?: string | null
     }>>({})
-
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
-    const { getProfile } = useProfiles()
+    useEffect(() => {
+        const handleMessage = (msg: ChatMessage) => {
+            setMessages(prev => [...prev, msg]);
+            if (msg.user_id === user?.id) return;
+            notificationService.notify(
+                "nouveau message",
+                msg.content,
+                { tag: 'chat' }
+            )
+        }
+
+        const channel = chatService.subscribeToMessages(handleMessage)
+
+        return () => {
+            void supabase.removeChannel(channel)
+        }
+    }, [user, getProfile])
+
+
 
     // Charger messages initiaux
     useEffect(() => {
         chatService.getMessages().then(messages => setMessages(messages))
-    }, [])
-
-    // Sub Realtime
-    useEffect(() => {
-        const subscription = chatService.subscribeToMessages((payload: any) => {
-            console.log(payload);
-            setMessages(prev => [...prev, payload])
-        })
-
-        return () => {
-            supabase.removeChannel(subscription)
-        }
     }, [])
 
     // Scroll automatique

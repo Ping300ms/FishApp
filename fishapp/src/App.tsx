@@ -6,8 +6,18 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import Layout from "./components/Layout.tsx";
 import FishScreen from "./screens/FishScreen.tsx";
 import RankingsScreen from "./screens/RankingsScreen.tsx";
+import { useEffect } from 'react'
 
 export default function App() {
+
+    useEffect(() => {
+        if ('Notification' in window) {
+            if (Notification.permission === 'default') {
+                Notification.requestPermission()
+            }
+        }
+    }, [])
+
     return (
         <BrowserRouter basename="/FishApp">
             <Routes>

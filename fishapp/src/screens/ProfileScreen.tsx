@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { profileService } from '../services/profile.service'
 import { useNavigate } from 'react-router-dom'
+import {notificationService} from "../services/notifications.service.ts";
 
 export default function ProfileScreen() {
     const { user, signOut } = useAuth()
@@ -70,6 +71,9 @@ export default function ProfileScreen() {
 
             <button onClick={handleLogout} style={styles.logoutButton}>
                 Se déconnecter (debug)
+            </button>
+            <button onClick={notificationService.requestPermission} style={styles.logoutButton}>
+                Notifs
             </button>
         </div>
     )
