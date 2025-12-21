@@ -53,7 +53,8 @@ const styles: Record<string, React.CSSProperties> = {
         padding: '0.5rem 1rem',
         borderRadius: 8,
         border: '1px solid #ccc',
-        fontSize: '1rem'
+        fontFamily: '"Press Start 2P", monospace', // typo pixel
+        fontSize: '0.65rem',
     },
     button: {
         padding: '0.5rem 1rem',
@@ -62,6 +63,8 @@ const styles: Record<string, React.CSSProperties> = {
         background: '#0ea5e9',
         color: '#fff',
         cursor: 'pointer',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontFamily: '"Press Start 2P", monospace', // typo pixel
+        fontSize: '0.65rem',
     }
 }

@@ -38,7 +38,7 @@ export default function Message({
                 {!isOwnMessage && (
                     <div style={styles.username}>{username}</div>
                 )}
-                <div>{content}</div>
+                <div style={styles.content}>{content}</div>
             </div>
         </div>
     )
@@ -81,5 +81,8 @@ const styles: Record<string, React.CSSProperties> = {
         fontWeight: 'bold',
         marginBottom: 4,
         opacity: 0.8
+    },
+    content: {
+        fontFamily: 'sans-serif',
     }
 }

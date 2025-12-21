@@ -97,6 +97,6 @@ const styles: Record<string, React.CSSProperties> = {
         justifyContent: 'center'
     },
     label: {
-        fontSize: 12
+        fontSize: 12,
     }
 }
