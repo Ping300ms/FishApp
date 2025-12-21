@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { profileService } from '../services/profile.service'
 import { useNavigate } from 'react-router-dom'
 import {notificationService} from "../services/notifications.service.ts";
+import FishGrid from "../components/FishGrid.tsx";
 
 export default function ProfileScreen() {
     const { user, signOut } = useAuth()
@@ -75,6 +76,13 @@ export default function ProfileScreen() {
             <button onClick={notificationService.requestPermission} style={styles.logoutButton}>
                 Notifs
             </button>
+
+            <div style={styles.container}>
+                {/* ... infos utilisateur ... */}
+
+                <h3>🎣 Mes poissons capturés</h3>
+                {user && <FishGrid userId={user.id} />}
+            </div>
         </div>
     )
 }
@@ -82,12 +90,12 @@ export default function ProfileScreen() {
 
 const styles: Record<string, React.CSSProperties> = {
     container: {
-        padding: '1.5rem',
         paddingBottom: 80, // pour bottom navbar
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '1rem'
+        gap: '1rem',
+        width: "100%",
     },
     avatar: {
         width: 120,

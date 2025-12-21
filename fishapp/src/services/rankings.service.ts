@@ -20,7 +20,7 @@ export const rankingsService = {
 
         data?.forEach((row: any) => {
             const userId = row.user_id
-            const username = row.profiles?.[0]?.username || 'User'
+            const username = row.profiles?.username || 'User'
 
             if (!map[userId]) {
                 map[userId] = { biggest_catch: row.size, total_catches: 1, username }

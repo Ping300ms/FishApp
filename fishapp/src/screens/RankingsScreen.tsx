@@ -11,6 +11,7 @@ export default function RankingsScreen() {
             .finally(() => setLoading(false))
     }, [])
 
+
     if (loading) return <div>Chargement du classement...</div>
 
     return (
