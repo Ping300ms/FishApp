@@ -14,7 +14,8 @@ export default function FishGrid({ userId }: Props) {
     useEffect(() => {
         const loadCatches = async () => {
             setLoading(true)
-            const { data, error } = await fishingService.getUserCatches(userId)
+            const { data, error } = await fishingService.getBiggestFishes(userId)
+
             if (error) {
                 console.error(error)
             } else if (data) {
@@ -25,19 +26,26 @@ export default function FishGrid({ userId }: Props) {
         loadCatches()
     }, [userId])
 
+    useEffect(() => {
+        console.log(catches)
+    }, [catches]);
+
     if (loading) return <p>Chargement des poissons...</p>
     if (catches.length === 0) return <p>Aucun poisson capturé pour l'instant.</p>
 
     return (
         <div style={styles.grid}>
-            {catches.map(fish => (
-                <FishCard
-                    key={fish.modelId + fish.size + fish.rarity}
-                    size={fish.size}
-                    rarity={parseInt(fish.rarity)}
-                    model={fish.modelId ? `basicFish` : 'basicFish'}
-                />
-            ))}
+            {catches.map(fish => {
+                console.log(fish)
+                return  (
+                    <FishCard
+                        key={fish.model_id + fish.size + fish.rarity}
+                        size={fish.size}
+                        rarity={parseInt(fish.rarity)}
+                        model={fish.model_id}
+                    />
+                )
+            })}
         </div>
     )
 }

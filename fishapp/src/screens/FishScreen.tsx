@@ -50,7 +50,7 @@ export default function FishingScreen() {
                 <FishPopup
                     size={fishOnLine.size}
                     rarity={fishOnLine.rarity}
-                    model="basicFish"
+                    model={fishOnLine.modelId}
                     onClose={handleClosePopup}
                 />
             )}
@@ -66,6 +66,7 @@ const styles: Record<string, React.CSSProperties> = {
         backgroundSize: 'contain',
         width: '100%',
         height: '100%',
+        overflow: 'hidden',
     },
     actions: {
     },

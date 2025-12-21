@@ -1,21 +1,26 @@
 // src/components/FishCard.tsx
-import React from 'react'
+import React, {useEffect} from 'react'
 import basicFish from '../assets/fish/basicFish/basicFish.gif'
+import pink from '../assets/fish/pink/pink.gif'
 
 type Props = {
     size: number
     rarity: number
-    model?: string
+    model: number
 }
 
-export default function FishCard({ size, rarity, model = 'basicFish' }: Props) {
+export default function FishCard({ size, rarity, model }: Props) {
 
-    const frames = [basicFish]
-    const src = frames[0]
+    useEffect(() => {
+        console.info(model)
+    }, []);
+
+    const frames = [basicFish, pink]
+    const src = frames[model % frames.length]
 
     return (
         <div style={styles.card}>
-            <img src={src} alt={model} style={styles.image} />
+            <img src={src} alt={model?.toString()} style={styles.image} />
             <div style={styles.info}>
                 <p><strong>Taille:</strong> {size} cm</p>
                 <p><strong>Rareté:</strong> {rarity}</p>

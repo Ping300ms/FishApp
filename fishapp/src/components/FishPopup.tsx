@@ -1,23 +1,24 @@
 import React from 'react'
 import basicFish from '../assets/fish/basicFish/basicFish.gif'
+import pink from '../assets/fish/Pink/Pink.gif'
 
 
 type Props = {
     size: number
     rarity: number
-    model?: string
+    model?: number
     onClose?: () => void
 }
 
-export default function FishPopup({ size, rarity, model = 'basicFish', onClose }: Props) {
+export default function FishPopup({ size, rarity, model = 0, onClose }: Props) {
 
-    const frames = [basicFish]
-    const src = frames[0]
+    const frames = [basicFish, pink]
+    const src = frames[model % frames.length]
 
     return (
         <div style={styles.overlay} onClick={onClose}>
             <div style={styles.card} onClick={e => e.stopPropagation()}>
-                <img src={src} alt={model} style={styles.image} />
+                <img src={src} alt={model?.toString()} style={styles.image} />
                 <p><strong>Taille:</strong> {size} cm</p>
                 <p><strong>Rareté:</strong> {rarity}</p>
                 {onClose && (

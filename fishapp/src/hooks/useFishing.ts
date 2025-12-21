@@ -28,7 +28,7 @@ export function useFishing() {
 
         const size = Math.round(Math.random() * 20 + 10 + attempt * 5)
         const rarity = Math.min(1 + attempt, 5)
-        const modelId = Math.floor(Math.random() * 20) + 1
+        const modelId = Math.floor(Math.random()* 2)
 
         return { id: Date.now(), size, rarity, modelId }
     }, [])
@@ -77,7 +77,7 @@ export function useFishing() {
         setMessage(`Enregistrement du poisson... 🐟`)
 
         const payload: CatchPayload = {
-            modelId: fishOnLine.modelId,
+            model_id: fishOnLine.modelId,
             size: fishOnLine.size,
             rarity: String(fishOnLine.rarity)
         }
