@@ -50,7 +50,6 @@ const styles: Record<string, React.CSSProperties> = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '1rem'
     },
     image: {
         width: 200,
@@ -62,6 +61,7 @@ const styles: Record<string, React.CSSProperties> = {
         borderRadius: 8,
         border: 'none',
         background: '#0ea5e9',
+        fontFamily: '"Press Start 2P", monospace',
         color: '#fff',
         cursor: 'pointer'
     }

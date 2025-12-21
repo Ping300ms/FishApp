@@ -29,7 +29,7 @@ export default function FisherCharacter({ character, isFishing }: Props) {
     const src = frames[frame]
 
     return (
-        <div style={styles.wrapper}>
+        <div>
             <img
                 src={src}
                 alt={`${character} fishing`}
@@ -41,21 +41,6 @@ export default function FisherCharacter({ character, isFishing }: Props) {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-    wrapper: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -55%)',
-
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        pointerEvents: 'none',
-        zIndex: 10,
-
-        marginBottom: "1vh",
-    },
     image: {
         width: 220,
         maxWidth: '80vw',

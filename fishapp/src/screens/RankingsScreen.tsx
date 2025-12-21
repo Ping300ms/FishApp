@@ -16,7 +16,7 @@ export default function RankingsScreen() {
 
     return (
         <div style={styles.container}>
-            <h2>🏆 Classement des plus grosses prises</h2>
+            <h2 style={styles.title}>Classement des plus grosses prises</h2>
 
             {entries.length === 0 && <p>Aucune prise enregistrée pour le moment.</p>}
 
@@ -37,7 +37,8 @@ export default function RankingsScreen() {
 const styles: Record<string, React.CSSProperties> = {
     container: {
         padding: '1rem',
-        paddingBottom: 80 // pour bottom navbar
+        paddingBottom: 80, // pour bottom navbar
+        fontFamily: '"Press Start 2P", monospace' // typo pixel
     },
     list: {
         listStyle: 'none',
@@ -48,7 +49,13 @@ const styles: Record<string, React.CSSProperties> = {
         display: 'flex',
         justifyContent: 'space-between',
         padding: '0.5rem 0',
-        borderBottom: '1px solid #e5e7eb'
+        borderBottom: '1px solid #e5e7eb',
+        fontFamily: '"Press Start 2P", monospace', // typo pixel
+        fontSize: "0.8rem"
+    },
+    title: {
+        fontSize: '1rem',
+        textAlign: 'center',
     },
     rank: {
         width: 30

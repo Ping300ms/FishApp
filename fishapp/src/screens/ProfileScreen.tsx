@@ -4,14 +4,13 @@ import { profileService } from '../services/profile.service'
 import { useNavigate } from 'react-router-dom'
 import {notificationService} from "../services/notifications.service.ts";
 import FishGrid from "../components/FishGrid.tsx";
+import FisherCharacter from "../components/FisherCharacter.tsx";
 
 export default function ProfileScreen() {
     const { user, signOut } = useAuth()
     const navigate = useNavigate()
     const [username, setUsername] = useState<string>('')
-    const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
-    const [newAvatar, setNewAvatar] = useState<string>('')
 
     useEffect(() => {
         if (!user) return
@@ -20,22 +19,10 @@ export default function ProfileScreen() {
             .then(({ data, error }) => {
                 if (error) throw error
                 setUsername(data.username)
-                setAvatarUrl(data.avatar_url || null)
             })
             .catch(console.error)
             .finally(() => setLoading(false))
     }, [user])
-
-    const handleUpdateAvatar = async () => {
-        if (!user || !newAvatar) return
-        try {
-            await profileService.updateAvatar(user.id, newAvatar)
-            setAvatarUrl(newAvatar)
-            setNewAvatar('')
-        } catch (err) {
-            console.error(err)
-        }
-    }
 
     const handleLogout = async () => {
         await signOut()
@@ -46,32 +33,15 @@ export default function ProfileScreen() {
 
     return (
         <div style={styles.container}>
-            <h2>👤 Profil</h2>
+            <h3 style={styles.title}>Profil</h3>
 
-            {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" style={styles.avatar} />
-            ) : (
-                <div style={styles.avatarPlaceholder}>Aucun avatar</div>
-            )}
+            <FisherCharacter character="marie" isFishing={true} />
 
             <p><strong>Username:</strong> {username}</p>
             <p><strong>Email:</strong> {user?.email}</p>
 
-            <div style={styles.updateContainer}>
-                <input
-                    type="text"
-                    placeholder="URL nouvel avatar"
-                    value={newAvatar}
-                    onChange={e => setNewAvatar(e.target.value)}
-                    style={styles.input}
-                />
-                <button onClick={handleUpdateAvatar} style={styles.button}>
-                    Mettre à jour
-                </button>
-            </div>
-
             <button onClick={handleLogout} style={styles.logoutButton}>
-                Se déconnecter (debug)
+                Se déconnecter
             </button>
             <button onClick={notificationService.requestPermission} style={styles.logoutButton}>
                 Notifs
@@ -80,7 +50,7 @@ export default function ProfileScreen() {
             <div style={styles.container}>
                 {/* ... infos utilisateur ... */}
 
-                <h3>🎣 Mes poissons capturés</h3>
+                <h3 style={styles.title}>Mes poissons capturés</h3>
                 {user && <FishGrid userId={user.id} />}
             </div>
         </div>
@@ -125,7 +95,6 @@ const styles: Record<string, React.CSSProperties> = {
         border: '1px solid #ccc'
     },
     button: {
-        padding: '0.5rem 1rem',
         borderRadius: 8,
         border: 'none',
         background: '#0ea5e9',
@@ -133,12 +102,15 @@ const styles: Record<string, React.CSSProperties> = {
         cursor: 'pointer'
     },
     logoutButton: {
-        marginTop: '2rem',
+        fontFamily: '"Press Start 2P", monospace', // typo pixel
         padding: '0.75rem 1rem',
         background: '#ef4444',
         color: '#fff',
         border: 'none',
         borderRadius: 8,
         cursor: 'pointer'
+    },
+    title: {
+        fontSize: 15,
     }
 }

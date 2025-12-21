@@ -14,7 +14,7 @@ export function useFishing() {
     const { user } = useAuth()
     const [isFishing, setIsFishing] = useState(false)
     const [fishOnLine, setFishOnLine] = useState<Fish | null>(null)
-    const [message, setMessage] = useState('Cliquez pour pêcher 🎣')
+    const [message, setMessage] = useState('Cliquez pour pêcher')
     const [attempts, setAttempts] = useState(0)
     const [nothingCaught, setNothingCaught] = useState(false)
     const [saving, setSaving] = useState(false)
@@ -42,13 +42,13 @@ export function useFishing() {
         setIsFishing(false)
         setAttempts(0)
         setNothingCaught(false)
-        setMessage('Cliquez pour pêcher 🎣')
+        setMessage('Cliquez pour pêcher')
     }, [])
 
     const startFishing = useCallback(() => {
         if (isFishing || saving) return
         setIsFishing(true)
-        setMessage('En attente du poisson... 🐟')
+        setMessage('En attente du poisson...')
         setNothingCaught(false)
 
         const fishingTime = Math.random() * 2000 + 1000
@@ -56,10 +56,10 @@ export function useFishing() {
             const result = generateFish(attempts)
             if (result) {
                 setFishOnLine(result)
-                setMessage('Un poisson mord à l’hameçon ! Clique pour relever ❗')
+                setMessage('Un poisson mord à l’hameçon !')
             } else {
                 setNothingCaught(true)
-                setMessage('Rien n’a mordu 😢 Clique pour recommencer.')
+                setMessage('Rien n’a mordu... Clique pour recommencer.')
                 setIsFishing(false)
             }
         }, fishingTime)
@@ -67,14 +67,14 @@ export function useFishing() {
 
     const reelInFish = useCallback(() => {
         if (!fishOnLine) return
-        setMessage('Vous avez attrapé un poisson ! 🐟')
+        setMessage('Vous avez attrapé un poisson !')
         setIsFishing(false)
     }, [fishOnLine])
 
     const handleKeep = useCallback(async () => {
         if (!fishOnLine || !user) return
         setSaving(true)
-        setMessage(`Enregistrement du poisson... 🐟`)
+        setMessage(`Enregistrement du poisson...`)
 
         const payload: CatchPayload = {
             model_id: fishOnLine.modelId,
@@ -88,7 +88,7 @@ export function useFishing() {
             setMessage(`Poisson gardé : ${fishOnLine.size}cm (rare ${fishOnLine.rarity})`)
         } catch (err) {
             console.error(err)
-            setMessage('Erreur lors de l’enregistrement 😢')
+            setMessage('Erreur lors de l’enregistrement')
         } finally {
             setSaving(false)
             resetFishing()

@@ -50,5 +50,6 @@ const styles: Record<string, React.CSSProperties> = {
     info: {
         textAlign: 'center',
         color: 'black',
+        fontSize: 10,
     }
 }

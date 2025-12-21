@@ -39,8 +39,10 @@ export const fishingService = {
 
     async getBiggestFishes(userId: string) {
         // On appelle la fonction RPC
+        console.log(userId)
         const response = await supabase
             .rpc('get_biggest_fishes_per_model', { p_user_id: userId });
+        console.log(response)
 
         // On retourne directement response pour que le composant puisse destructurer
         return response; // { data, error }
