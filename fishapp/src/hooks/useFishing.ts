@@ -1,5 +1,4 @@
-// src/hooks/useFishing.ts
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { fishingService, type CatchPayload } from '../services/fishing.service'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -16,32 +15,30 @@ export function useFishing() {
     const [fishOnLine, setFishOnLine] = useState<Fish | null>(null)
     const [message, setMessage] = useState('Cliquez pour pêcher')
     const [attempts, setAttempts] = useState(0)
-    const [nothingCaught, setNothingCaught] = useState(false)
     const [saving, setSaving] = useState(false)
 
-    const timerRef = useRef<number | null>(null)
+    const biteTimeRef = useRef<number>(0)
+    const biteWindowRef = useRef<number | null>(null)
+    const fishingTimeoutRef = useRef<number | null>(null)
+    const fishLockedRef = useRef(false) // bloque disparition si popup ouvert
 
-    const generateFish = useCallback((attempt: number): Fish | null => {
-        const baseFailChance = 0.1
-        const failChance = Math.min(baseFailChance + attempt * 0.1, 0.8)
-        if (Math.random() < failChance) return null
-
+    const generateFish = useCallback((attempt: number): Fish => {
         const size = Math.round(Math.random() * 20 + 10 + attempt * 5)
         const rarity = Math.min(1 + attempt, 5)
-        const modelId = Math.floor(Math.random()* 2)
-
+        const modelId = Math.floor(Math.random() * 2)
         return { id: Date.now(), size, rarity, modelId }
     }, [])
 
     const resetFishing = useCallback(() => {
-        if (timerRef.current !== null) {
-            clearTimeout(timerRef.current)
-            timerRef.current = null
-        }
-        setFishOnLine(null)
+        if (fishingTimeoutRef.current !== null) clearTimeout(fishingTimeoutRef.current)
+        if (biteWindowRef.current !== null) clearTimeout(biteWindowRef.current)
+        fishingTimeoutRef.current = null
+        biteWindowRef.current = null
+        fishLockedRef.current = false
+
         setIsFishing(false)
+        setFishOnLine(null)
         setAttempts(0)
-        setNothingCaught(false)
         setMessage('Cliquez pour pêcher')
     }, [])
 
@@ -49,32 +46,40 @@ export function useFishing() {
         if (isFishing || saving) return
         setIsFishing(true)
         setMessage('En attente du poisson...')
-        setNothingCaught(false)
 
-        const fishingTime = Math.random() * 2000 + 1000
-        timerRef.current = window.setTimeout(() => {
-            const result = generateFish(attempts)
-            if (result) {
-                setFishOnLine(result)
-                setMessage('Un poisson mord à l’hameçon !')
-            } else {
-                setNothingCaught(true)
-                setMessage('Rien n’a mordu... Clique pour recommencer.')
+        const fishingTime = Math.random() * 10000 + 1000
+        fishingTimeoutRef.current = window.setTimeout(() => {
+            const fish = generateFish(attempts)
+            setFishOnLine(fish)
+            setMessage('❗ ')
+            biteTimeRef.current = Date.now()
+
+            // Calcul dynamique de la fenêtre de capture
+            const minWindow = 200    // 0.5s
+            const maxWindow = 1000   // 1.5s
+            const maxAttempts = 5    // quand attempts = 5, on est à 0.5s
+            const windowTime = Math.max(
+                minWindow,
+                maxWindow - ((maxWindow - minWindow) / maxAttempts) * attempts
+            )
+
+            biteWindowRef.current = window.setTimeout(() => {
+                if (fishLockedRef.current) return
+                // Poisson échappé, reset niveau
+                setFishOnLine(null)
+                setMessage("Le poisson s'est échappé...")
+                setAttempts(0)
                 setIsFishing(false)
-            }
+            }, windowTime)
         }, fishingTime)
     }, [isFishing, saving, attempts, generateFish])
 
-    const reelInFish = useCallback(() => {
-        if (!fishOnLine) return
-        setMessage('Vous avez attrapé un poisson !')
-        setIsFishing(false)
-    }, [fishOnLine])
+
 
     const handleKeep = useCallback(async () => {
         if (!fishOnLine || !user) return
         setSaving(true)
-        setMessage(`Enregistrement du poisson...`)
+        setMessage('Enregistrement du poisson...')
 
         const payload: CatchPayload = {
             model_id: fishOnLine.modelId,
@@ -97,19 +102,34 @@ export function useFishing() {
 
     const handleRelease = useCallback(() => {
         if (!fishOnLine) return
+
+        if (biteWindowRef.current !== null) {
+            clearTimeout(biteWindowRef.current)
+            biteWindowRef.current = null
+        }
+
+        // relâché = niveau augmente
         setAttempts(prev => prev + 1)
-        setMessage('Relâché et nouveau lancer...')
+        setMessage('Poisson relâché, cliquez pour relancer...')
         setFishOnLine(null)
         setIsFishing(false)
-        startFishing()
-    }, [fishOnLine, startFishing])
+    }, [fishOnLine])
 
-    // Nettoyage timer
+    const handleStop = useCallback(() => {
+        // Arrêter = abandon poisson, reset état mais pas le niveau
+        if (biteWindowRef.current !== null) {
+            clearTimeout(biteWindowRef.current)
+            biteWindowRef.current = null
+        }
+        setFishOnLine(null)
+        setIsFishing(false)
+        setMessage('Pêche arrêtée.')
+    }, [])
+
     useEffect(() => {
         return () => {
-            if (timerRef.current !== null) {
-                clearTimeout(timerRef.current)
-            }
+            if (fishingTimeoutRef.current !== null) clearTimeout(fishingTimeoutRef.current)
+            if (biteWindowRef.current !== null) clearTimeout(biteWindowRef.current)
         }
     }, [])
 
@@ -117,12 +137,12 @@ export function useFishing() {
         isFishing,
         fishOnLine,
         message,
-        nothingCaught,
         saving,
         startFishing,
-        reelInFish,
         handleKeep,
         handleRelease,
-        resetFishing
+        handleStop,
+        resetFishing,
+        fishLockedRef
     }
 }

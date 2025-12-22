@@ -2,28 +2,29 @@ import React from 'react'
 import basicFish from '../assets/fish/basicFish/basicFish.gif'
 import pink from '../assets/fish/Pink/Pink.gif'
 
-
 type Props = {
     size: number
     rarity: number
     model?: number
-    onClose?: () => void
+    onClose: (action: 'keep' | 'release' | 'stop') => void
 }
 
 export default function FishPopup({ size, rarity, model = 0, onClose }: Props) {
-
     const frames = [basicFish, pink]
     const src = frames[model % frames.length]
 
     return (
-        <div style={styles.overlay} onClick={onClose}>
-            <div style={styles.card} onClick={e => e.stopPropagation()}>
-                <img src={src} alt={model?.toString()} style={styles.image} />
+        <div style={styles.overlay}>
+            <div style={styles.card}>
+                <img src={src} alt={`Fish ${model}`} style={styles.image} />
                 <p><strong>Taille:</strong> {size} cm</p>
                 <p><strong>Rareté:</strong> {rarity}</p>
-                {onClose && (
-                    <button onClick={onClose} style={styles.button}>Fermer</button>
-                )}
+
+                <div style={styles.actions}>
+                    <button style={styles.button} onClick={() => onClose('keep')}>Garder</button>
+                    <button style={styles.button} onClick={() => onClose('release')}>Relâcher</button>
+                    <button style={styles.button} onClick={() => onClose('stop')}>Arrêter</button>
+                </div>
             </div>
         </div>
     )
@@ -50,11 +51,17 @@ const styles: Record<string, React.CSSProperties> = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        gap: '1rem'
     },
     image: {
         width: 200,
         height: 200,
         objectFit: 'contain'
+    },
+    actions: {
+        display: 'flex',
+        gap: '0.5rem',
+        marginTop: '0.5rem'
     },
     button: {
         padding: '0.5rem 1rem',
