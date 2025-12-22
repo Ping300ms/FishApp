@@ -14,7 +14,8 @@ export default function FishingScreen() {
         handleRelease,
         handleStop,
         isFishing,
-        fishLockedRef
+        fishLockedRef,
+        cancelBeforeBite
     } = useFishing()
 
     const [showPopup, setShowPopup] = useState(false)
@@ -38,8 +39,13 @@ export default function FishingScreen() {
         <div
             style={styles.container}
             onClick={() => {
-                if (fishOnLine && !showPopup) handleClickFish()
-                else if (!fishOnLine && !saving) startFishing()
+                if (fishOnLine && !showPopup) {
+                    handleClickFish()              // ❗ cliqué → popup
+                } else if (isFishing && !fishOnLine) {
+                    cancelBeforeBite()             // 🎣 trop tôt → annule
+                } else if (!saving) {
+                    startFishing()                 // lancer la canne
+                }
             }}
         >
             <div style={styles.ui}>

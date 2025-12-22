@@ -18,6 +18,7 @@ export function useFishing() {
     const [saving, setSaving] = useState(false)
 
     const biteTimeRef = useRef<number>(0)
+    const hasBiteRef = useRef(false)
     const biteWindowRef = useRef<number | null>(null)
     const fishingTimeoutRef = useRef<number | null>(null)
     const fishLockedRef = useRef(false) // bloque disparition si popup ouvert
@@ -30,34 +31,40 @@ export function useFishing() {
     }, [])
 
     const resetFishing = useCallback(() => {
-        if (fishingTimeoutRef.current !== null) clearTimeout(fishingTimeoutRef.current)
-        if (biteWindowRef.current !== null) clearTimeout(biteWindowRef.current)
+        if (fishingTimeoutRef.current) clearTimeout(fishingTimeoutRef.current)
+        if (biteWindowRef.current) clearTimeout(biteWindowRef.current)
+
         fishingTimeoutRef.current = null
         biteWindowRef.current = null
         fishLockedRef.current = false
+        hasBiteRef.current = false
 
         setIsFishing(false)
         setFishOnLine(null)
-        setAttempts(0)
         setMessage('Cliquez pour pêcher')
     }, [])
 
+
     const startFishing = useCallback(() => {
         if (isFishing || saving) return
+
         setIsFishing(true)
         setMessage('En attente du poisson...')
+        hasBiteRef.current = false
 
         const fishingTime = Math.random() * 10000 + 1000
+
         fishingTimeoutRef.current = window.setTimeout(() => {
             const fish = generateFish(attempts)
             setFishOnLine(fish)
-            setMessage('❗ ')
+            setMessage('❗')
             biteTimeRef.current = Date.now()
+            hasBiteRef.current = true
 
-            // Calcul dynamique de la fenêtre de capture
-            const minWindow = 200    // 0.5s
-            const maxWindow = 1000   // 1.5s
-            const maxAttempts = 5    // quand attempts = 5, on est à 0.5s
+            const minWindow = 200
+            const maxWindow = 1000
+            const maxAttempts = 5
+
             const windowTime = Math.max(
                 minWindow,
                 maxWindow - ((maxWindow - minWindow) / maxAttempts) * attempts
@@ -65,14 +72,28 @@ export function useFishing() {
 
             biteWindowRef.current = window.setTimeout(() => {
                 if (fishLockedRef.current) return
-                // Poisson échappé, reset niveau
+
                 setFishOnLine(null)
                 setMessage("Le poisson s'est échappé...")
                 setAttempts(0)
                 setIsFishing(false)
+                hasBiteRef.current = false
             }, windowTime)
         }, fishingTime)
     }, [isFishing, saving, attempts, generateFish])
+
+
+    const cancelBeforeBite = useCallback(() => {
+        if (!isFishing || hasBiteRef.current) return
+
+        if (fishingTimeoutRef.current) {
+            clearTimeout(fishingTimeoutRef.current)
+            fishingTimeoutRef.current = null
+        }
+
+        setIsFishing(false)
+        setMessage('Pêche annulée')
+    }, [isFishing])
 
 
 
@@ -143,6 +164,7 @@ export function useFishing() {
         handleRelease,
         handleStop,
         resetFishing,
-        fishLockedRef
+        fishLockedRef,
+        cancelBeforeBite
     }
 }
