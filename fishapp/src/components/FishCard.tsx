@@ -1,7 +1,14 @@
 // src/components/FishCard.tsx
 import React, {useEffect} from 'react'
-import basicFish from '../assets/fish/basicFish/basicFish.gif'
-import pink from '../assets/fish/pink/pink.gif'
+import sprite0 from '../assets/fish/0.png'
+import sprite1 from '../assets/fish/1.png'
+import sprite2 from '../assets/fish/2.png'
+import sprite3 from '../assets/fish/3.png'
+import sprite4 from '../assets/fish/4.png'
+import sprite5 from '../assets/fish/5.png'
+import sprite6 from '../assets/fish/6.png'
+import sprite7 from '../assets/fish/7.png'
+import sprite8 from '../assets/fish/8.png'
 
 type Props = {
     size: number
@@ -15,7 +22,7 @@ export default function FishCard({ size, rarity, model }: Props) {
         console.info(model)
     }, []);
 
-    const frames = [basicFish, pink]
+    const frames = [sprite0, sprite1, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8]
     const src = frames[model % frames.length]
 
     return (
@@ -45,7 +52,8 @@ const styles: Record<string, React.CSSProperties> = {
     image: {
         width: 100,
         height: 100,
-        objectFit: 'contain'
+        objectFit: 'contain',
+        imageRendering: 'pixelated',
     },
     info: {
         textAlign: 'center',

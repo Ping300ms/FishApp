@@ -1,6 +1,13 @@
 import React from 'react'
-import basicFish from '../assets/fish/basicFish/basicFish.gif'
-import pink from '../assets/fish/Pink/Pink.gif'
+import sprite0 from '../assets/fish/0.png'
+import sprite1 from '../assets/fish/1.png'
+import sprite2 from '../assets/fish/2.png'
+import sprite3 from '../assets/fish/3.png'
+import sprite4 from '../assets/fish/4.png'
+import sprite5 from '../assets/fish/5.png'
+import sprite6 from '../assets/fish/6.png'
+import sprite7 from '../assets/fish/7.png'
+import sprite8 from '../assets/fish/8.png'
 
 type Props = {
     size: number
@@ -10,7 +17,7 @@ type Props = {
 }
 
 export default function FishPopup({ size, rarity, model = 0, onClose }: Props) {
-    const frames = [basicFish, pink]
+    const frames = [sprite0, sprite1, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8]
     const src = frames[model % frames.length]
 
     return (
@@ -56,7 +63,8 @@ const styles: Record<string, React.CSSProperties> = {
     image: {
         width: 200,
         height: 200,
-        objectFit: 'contain'
+        objectFit: 'contain',
+        imageRendering: 'pixelated',
     },
     actions: {
         display: 'flex',

@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { fishingService, type CatchPayload } from '../services/fishing.service'
 import { useAuth } from '../contexts/AuthContext'
+import {FISH_TABLE, CAPTURE_WINDOW_BY_RARITY, TARGET_WEIGHT_BY_RARITY} from "../game/fishTable.ts";
 
 export type Fish = {
     id: number
@@ -23,12 +24,31 @@ export function useFishing() {
     const fishingTimeoutRef = useRef<number | null>(null)
     const fishLockedRef = useRef(false) // bloque disparition si popup ouvert
 
-    const generateFish = useCallback((attempt: number): Fish => {
-        const size = Math.round(Math.random() * 20 + 10 + attempt * 5)
-        const rarity = Math.min(1 + attempt, 5)
-        const modelId = Math.floor(Math.random() * 2)
-        return { id: Date.now(), size, rarity, modelId }
-    }, [])
+    function lerp(a: number, b: number, t: number) {
+        return a + (b - a) * t
+    }
+
+    function pickFishByLevel(level: number) {
+        const progress = Math.min(level / 20, 1) // niveau 20 = cap
+
+        const weightedPool = FISH_TABLE.map(fish => {
+            const target = TARGET_WEIGHT_BY_RARITY[fish.rarity]
+            const weight = lerp(fish.baseWeight, target, progress)
+
+            return { fish, weight }
+        })
+
+        const total = weightedPool.reduce((s, f) => s + f.weight, 0)
+        let roll = Math.random() * total
+
+        for (const entry of weightedPool) {
+            roll -= entry.weight
+            if (roll <= 0) return entry.fish
+        }
+
+        return weightedPool[0].fish
+    }
+
 
     const resetFishing = useCallback(() => {
         if (fishingTimeoutRef.current) clearTimeout(fishingTimeoutRef.current)
@@ -52,23 +72,25 @@ export function useFishing() {
         setMessage('En attente du poisson...')
         hasBiteRef.current = false
 
-        const fishingTime = Math.random() * 10000 + 1000
+        const fishDef = pickFishByLevel(attempts)
+
+        const biteDelay =
+            Math.random() * 10000 + 1000
 
         fishingTimeoutRef.current = window.setTimeout(() => {
-            const fish = generateFish(attempts)
+            const fish: Fish = {
+                id: Date.now(),
+                modelId: fishDef.modelId,
+                rarity: fishDef.rarity,
+                size: Math.round(Math.random() * 20 + 10 + attempts * 3)
+            }
+
             setFishOnLine(fish)
             setMessage('❗')
             biteTimeRef.current = Date.now()
             hasBiteRef.current = true
 
-            const minWindow = 200
-            const maxWindow = 1000
-            const maxAttempts = 5
-
-            const windowTime = Math.max(
-                minWindow,
-                maxWindow - ((maxWindow - minWindow) / maxAttempts) * attempts
-            )
+            const windowTime = CAPTURE_WINDOW_BY_RARITY[fishDef.rarity]
 
             biteWindowRef.current = window.setTimeout(() => {
                 if (fishLockedRef.current) return
@@ -79,8 +101,9 @@ export function useFishing() {
                 setIsFishing(false)
                 hasBiteRef.current = false
             }, windowTime)
-        }, fishingTime)
-    }, [isFishing, saving, attempts, generateFish])
+        }, biteDelay)
+    }, [isFishing, saving, attempts])
+
 
 
     const cancelBeforeBite = useCallback(() => {
@@ -165,6 +188,7 @@ export function useFishing() {
         handleStop,
         resetFishing,
         fishLockedRef,
-        cancelBeforeBite
+        cancelBeforeBite,
+        attempts
     }
 }

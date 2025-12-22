@@ -15,7 +15,8 @@ export default function FishingScreen() {
         handleStop,
         isFishing,
         fishLockedRef,
-        cancelBeforeBite
+        cancelBeforeBite,
+        attempts
     } = useFishing()
 
     const [showPopup, setShowPopup] = useState(false)
@@ -50,6 +51,7 @@ export default function FishingScreen() {
         >
             <div style={styles.ui}>
                 <p style={styles.text}>{message}</p>
+                <p style={styles.text}>{attempts}</p>
             </div>
 
             <div style={styles.characterWrapper}>
