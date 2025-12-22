@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { profileService } from '../services/profile.service'
 import { useNavigate } from 'react-router-dom'
-import {notificationService} from "../services/notifications.service.ts";
 import FishGrid from "../components/FishGrid.tsx";
 import FisherCharacter from "../components/FisherCharacter.tsx";
 
@@ -37,21 +36,22 @@ export default function ProfileScreen() {
 
             <FisherCharacter character="marie" isFishing={true} />
 
-            <p><strong>Username:</strong> {username}</p>
-            <p><strong>Email:</strong> {user?.email}</p>
+            <p style={styles.text}><strong>Username:</strong> {username}</p>
+            <p style={styles.text}><strong>Email:</strong> {user?.email}</p>
 
             <button onClick={handleLogout} style={styles.logoutButton}>
                 Se déconnecter
-            </button>
-            <button onClick={notificationService.requestPermission} style={styles.logoutButton}>
-                Notifs
             </button>
 
             <div style={styles.container}>
                 {/* ... infos utilisateur ... */}
 
                 <h3 style={styles.title}>Mes poissons capturés</h3>
-                {user && <FishGrid userId={user.id} />}
+                {user && (
+                    <div style={styles.gridWrapper}>
+                        <FishGrid userId={user.id} />
+                    </div>
+                )}
             </div>
         </div>
     )
@@ -112,5 +112,13 @@ const styles: Record<string, React.CSSProperties> = {
     },
     title: {
         fontSize: 15,
+    },
+    gridWrapper: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+    },
+    text : {
+        margin: 0
     }
 }

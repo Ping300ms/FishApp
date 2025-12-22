@@ -42,7 +42,7 @@ export default function FisherCharacter({ character, isFishing }: Props) {
 
 const styles: Record<string, React.CSSProperties> = {
     image: {
-        width: 220,
+        width: 150,
         maxWidth: '80vw',
         userSelect: 'none',
         imageRendering: 'pixelated',

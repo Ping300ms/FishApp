@@ -33,6 +33,7 @@ export default function ChatInput({ onSend, disabled = false, placeholder = "Tap
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
                 style={styles.input}
+                className="input"
             />
             <button onClick={handleSend} disabled={disabled || !message.trim()} style={styles.button}>
                 Envoyer
@@ -53,8 +54,8 @@ const styles: Record<string, React.CSSProperties> = {
         padding: '0.5rem 1rem',
         borderRadius: 8,
         border: '1px solid #ccc',
-        fontFamily: '"Press Start 2P", monospace', // typo pixel
-        fontSize: '0.65rem',
+        fontFamily: 'sans-serif',
+        fontSize: '0.75rem',
     },
     button: {
         padding: '0.5rem 1rem',

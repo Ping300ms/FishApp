@@ -1,5 +1,4 @@
-// src/components/FishCard.tsx
-import React, {useEffect} from 'react'
+import poissonNoir from '../assets/fish/poisson_noir.png'
 import sprite0 from '../assets/fish/0.png'
 import sprite1 from '../assets/fish/1.png'
 import sprite2 from '../assets/fish/2.png'
@@ -11,26 +10,41 @@ import sprite7 from '../assets/fish/7.png'
 import sprite8 from '../assets/fish/8.png'
 
 type Props = {
-    size: number
-    rarity: number
     model: number
+    size?: number
+    rarity?: number
+    discovered: boolean
 }
 
-export default function FishCard({ size, rarity, model }: Props) {
-
-    useEffect(() => {
-        console.info(model)
-    }, []);
-
+export default function FishCard({ model, size, rarity, discovered }: Props) {
     const frames = [sprite0, sprite1, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8]
     const src = frames[model % frames.length]
 
     return (
-        <div style={styles.card}>
-            <img src={src} alt={model?.toString()} style={styles.image} />
+        <div
+            style={{
+                ...styles.card,
+                opacity: discovered ? 1 : 0.35
+            }}
+        >
+            <img
+                src={discovered ? src : poissonNoir}
+                alt={discovered ? `Fish ${model}` : 'Poisson inconnu'}
+                style={{
+                    ...styles.image,
+                    filter: discovered ? 'none' : 'grayscale(100%)'
+                }}
+            />
+
             <div style={styles.info}>
-                <p><strong>Taille:</strong> {size} cm</p>
-                <p><strong>Rareté:</strong> {rarity}</p>
+                {discovered ? (
+                    <>
+                        <p><strong>Taille:</strong> {size} cm</p>
+                        <p><strong>Rareté:</strong> {rarity}</p>
+                    </>
+                ) : (
+                    <p style={styles.unknown}>Poisson non découvert</p>
+                )}
             </div>
         </div>
     )
@@ -47,11 +61,10 @@ const styles: Record<string, React.CSSProperties> = {
         gap: '0.5rem',
         boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
         width: 100,
-        margin: '10px',
     },
     image: {
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         objectFit: 'contain',
         imageRendering: 'pixelated',
     },
@@ -59,5 +72,9 @@ const styles: Record<string, React.CSSProperties> = {
         textAlign: 'center',
         color: 'black',
         fontSize: 10,
+    },
+    unknown: {
+        fontStyle: 'italic',
+        color: '#555'
     }
 }

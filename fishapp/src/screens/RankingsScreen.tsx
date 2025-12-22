@@ -22,8 +22,17 @@ export default function RankingsScreen() {
 
             <ol style={styles.list}>
                 {entries.map((entry, index) => (
-                    <li key={entry.user_id} style={styles.item}>
-                        <span style={styles.rank}>{index + 1}.</span>
+                    <li
+                        key={entry.user_id}
+                        style={{
+                            ...styles.item,
+                            background:
+                                index === 0 ? '#3b0764' :
+                                    index === 1 ? '#1e3a8a' :
+                                        index === 2 ? '#064e3b' :
+                                            'transparent'
+                        }}
+                    >                        <span style={styles.rank}>{index + 1}.</span>
                         <span style={styles.username}>{entry.username}</span>
                         <span style={styles.size}>🐟 {entry.biggest_catch} cm</span>
                         <span style={styles.total}>({entry.total_catches} prises)</span>
@@ -37,36 +46,62 @@ export default function RankingsScreen() {
 const styles: Record<string, React.CSSProperties> = {
     container: {
         padding: '1rem',
-        paddingBottom: 80, // pour bottom navbar
-        fontFamily: '"Press Start 2P", monospace' // typo pixel
-    },
-    list: {
-        listStyle: 'none',
-        padding: 0,
-        margin: 0
-    },
-    item: {
+        paddingBottom: 90,
+        fontFamily: '"Press Start 2P", monospace',
         display: 'flex',
-        justifyContent: 'space-between',
-        padding: '0.5rem 0',
-        borderBottom: '1px solid #e5e7eb',
-        fontFamily: '"Press Start 2P", monospace', // typo pixel
-        fontSize: "0.8rem"
+        flexDirection: 'column',
+        alignItems: 'center',
+        minHeight: '100vh',
+        color: '#e5e7eb'
     },
+
     title: {
         fontSize: '1rem',
         textAlign: 'center',
+        marginBottom: '1rem',
+        textShadow: '2px 2px 0 #000'
     },
+
+    list: {
+        listStyle: 'none',
+        padding: 0,
+        margin: 0,
+        width: '100%',
+        maxWidth: 420,
+        background: '#020617',
+        border: '3px solid #38bdf8',
+        borderRadius: 12,
+        boxShadow: '0 0 0 4px #000',
+        overflow: 'hidden'
+    },
+
+    item: {
+        display: 'grid',
+        gridTemplateColumns: '32px 1fr auto auto',
+        alignItems: 'center',
+        gap: '0.5rem',
+        padding: '0.75rem',
+        fontSize: '0.7rem',
+        borderBottom: '2px dashed #1e293b'
+    },
+
     rank: {
-        width: 30
+        textAlign: 'center',
+        color: '#facc15'
     },
+
     username: {
-        flex: 1
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     },
+
     size: {
-        marginRight: 10
+        color: '#38bdf8'
     },
+
     total: {
-        color: '#64748b'
+        fontSize: '0.6rem',
+        color: '#94a3b8'
     }
 }

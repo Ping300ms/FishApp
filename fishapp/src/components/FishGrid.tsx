@@ -1,7 +1,7 @@
-// src/components/FishGrid.tsx
 import React, { useEffect, useState } from 'react'
 import FishCard from './FishCard'
 import { fishingService, type CatchPayload } from '../services/fishing.service'
+import { FISH_TABLE } from '../game/fishTable'
 
 type Props = {
     userId: string
@@ -15,34 +15,31 @@ export default function FishGrid({ userId }: Props) {
         const loadCatches = async () => {
             setLoading(true)
             const { data, error } = await fishingService.getBiggestFishes(userId)
-
-            if (error) {
-                console.error(error)
-            } else if (data) {
-                setCatches(data)
-            }
+            if (!error && data) setCatches(data)
             setLoading(false)
         }
         loadCatches()
     }, [userId])
 
-    useEffect(() => {
-        console.log(catches)
-    }, [catches]);
-
     if (loading) return <p>Chargement des poissons...</p>
-    if (catches.length === 0) return <p>Aucun poisson capturé pour l'instant.</p>
+
+    // Map: modelId -> record perso
+    const catchesByModel = new Map(
+        catches.map(c => [c.model_id, c])
+    )
 
     return (
         <div style={styles.grid}>
-            {catches.map(fish => {
-                console.log(fish)
-                return  (
+            {FISH_TABLE.map(fishDef => {
+                const record = catchesByModel.get(fishDef.modelId)
+
+                return (
                     <FishCard
-                        key={fish.model_id + fish.size + fish.rarity}
-                        size={fish.size}
-                        rarity={parseInt(fish.rarity)}
-                        model={fish.model_id}
+                        key={fishDef.modelId}
+                        model={fishDef.modelId}
+                        discovered={!!record}
+                        size={record?.size}
+                        rarity={record ? parseInt(record.rarity) : fishDef.rarity}
                     />
                 )
             })}
@@ -53,9 +50,11 @@ export default function FishGrid({ userId }: Props) {
 const styles: Record<string, React.CSSProperties> = {
     grid: {
         display: 'grid',
-        gap: '1rem',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+        gap: '12px',
         width: '100%',
-
+        maxWidth: 600,
+        margin: '0 auto',
+        justifyItems: 'center'
     }
 }

@@ -9,14 +9,17 @@ import sprite6 from '../assets/fish/6.png'
 import sprite7 from '../assets/fish/7.png'
 import sprite8 from '../assets/fish/8.png'
 
-type Props = {
+type FishPopupProps = {
     size: number
     rarity: number
     model?: number
+    isNew?: boolean      // nouveau poisson pour le joueur
+    isRecord?: boolean   // plus gros poisson pour ce modèle
     onClose: (action: 'keep' | 'release' | 'stop') => void
 }
 
-export default function FishPopup({ size, rarity, model = 0, onClose }: Props) {
+
+export default function FishPopup({ size, rarity, model = 0, isNew, isRecord, onClose }: FishPopupProps) {
     const frames = [sprite0, sprite1, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8]
     const src = frames[model % frames.length]
 
@@ -24,8 +27,12 @@ export default function FishPopup({ size, rarity, model = 0, onClose }: Props) {
         <div style={styles.overlay}>
             <div style={styles.card}>
                 <img src={src} alt={`Fish ${model}`} style={styles.image} />
-                <p><strong>Taille:</strong> {size} cm</p>
-                <p><strong>Rareté:</strong> {rarity}</p>
+                <div style={styles.info}>
+                    <p><strong>Taille:</strong> {size} cm</p>
+                    <p><strong>Rareté:</strong> {rarity}</p>
+                    {isNew && <span style={styles.badge}>✨ Nouveau !</span>}
+                    {isRecord && <span style={styles.badge}>🏆 Record !</span>}
+                </div>
 
                 <div style={styles.actions}>
                     <button style={styles.button} onClick={() => onClose('keep')}>Garder</button>
@@ -40,44 +47,30 @@ export default function FishPopup({ size, rarity, model = 0, onClose }: Props) {
 const styles: Record<string, React.CSSProperties> = {
     overlay: {
         position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
+        top: 0, left: 0, width: '100vw', height: '100vh',
         backgroundColor: 'rgba(0,0,0,0.5)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        display: 'flex', justifyContent: 'center', alignItems: 'center',
         zIndex: 999
     },
-    card: {
-        backgroundColor: '#fff',
-        color: '#000',
-        borderRadius: 12,
-        padding: '1rem 2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '1rem'
+    card: { backgroundColor: '#fff', borderRadius: 12, padding: '1rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' },
+    image: { width: 200, height: 200, objectFit: 'contain', imageRendering: 'pixelated' },
+    info: { textAlign: 'center', color: 'black', fontSize: 12 },
+    badge: {
+        display: 'block',
+        marginTop: 4,
+        fontSize: 12,
+        color: '#facc15',
+        fontWeight: 'bold'
     },
-    image: {
-        width: 200,
-        height: 200,
-        objectFit: 'contain',
-        imageRendering: 'pixelated',
-    },
-    actions: {
-        display: 'flex',
-        gap: '0.5rem',
-        marginTop: '0.5rem'
-    },
+    actions: { display: 'flex', gap: '0.5rem', marginTop: '0.5rem' },
     button: {
         padding: '0.5rem 1rem',
         borderRadius: 8,
         border: 'none',
         background: '#0ea5e9',
-        fontFamily: '"Press Start 2P", monospace',
         color: '#fff',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        fontFamily: '"Press Start 2P", monospace', // typo pixel
+        fontSize: 9,
     }
 }
