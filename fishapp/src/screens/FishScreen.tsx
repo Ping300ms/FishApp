@@ -3,11 +3,11 @@ import background from '../assets/background/background.png'
 import FisherCharacter from '../components/FisherCharacter'
 import { useState } from 'react'
 import FishPopup from '../components/FishPopup'
+import bubble from '../assets/bubble.png'
 
 export default function FishingScreen() {
     const {
         fishOnLine,
-        message,
         saving,
         startFishing,
         handleKeep,
@@ -50,9 +50,16 @@ export default function FishingScreen() {
             }}
         >
             <div style={styles.ui}>
-                <p style={styles.text}>{message}</p>
-                <p style={styles.text}>{attempts}</p>
+                <p style={styles.text}>niveau de pêche: {attempts}</p>
             </div>
+
+            {fishOnLine && !showPopup && (
+                <img
+                    src={bubble}
+                    alt="Fish bite"
+                    style={styles.bubble}
+                />
+            )}
 
             <div style={styles.characterWrapper}>
                 <FisherCharacter character="marie" isFishing={isFishing} />
@@ -75,4 +82,16 @@ const styles: Record<string, React.CSSProperties> = {
     ui: { position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', zIndex: 10, pointerEvents: 'auto', width: '100%' },
     text: { fontFamily: '"Press Start 2P", monospace', fontSize: '14px', textAlign: 'center', color: '#fff', textShadow: '2px 2px 0 #000', maxWidth: 280, lineHeight: 1.6 },
     characterWrapper: { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -55%)', display: 'flex', justifyContent: 'center', alignItems: 'center', pointerEvents: 'none', zIndex: 10, marginBottom: "1vh" },
+    bubble: {
+        position: 'absolute',
+        top: '38%',
+        left: '45%',
+        transform: 'translate(-50%, -100%)',
+        width: 75,
+        height: 75,
+        imageRendering: 'pixelated',
+        zIndex: 20,
+        pointerEvents: 'none'
+    }
+
 }

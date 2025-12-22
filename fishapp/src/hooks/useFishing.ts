@@ -14,7 +14,6 @@ export function useFishing() {
     const { user } = useAuth()
     const [isFishing, setIsFishing] = useState(false)
     const [fishOnLine, setFishOnLine] = useState<Fish | null>(null)
-    const [message, setMessage] = useState('Cliquez pour pêcher')
     const [attempts, setAttempts] = useState(0)
     const [saving, setSaving] = useState(false)
 
@@ -61,7 +60,6 @@ export function useFishing() {
 
         setIsFishing(false)
         setFishOnLine(null)
-        setMessage('Cliquez pour pêcher')
     }, [])
 
 
@@ -69,7 +67,6 @@ export function useFishing() {
         if (isFishing || saving) return
 
         setIsFishing(true)
-        setMessage('En attente du poisson...')
         hasBiteRef.current = false
 
         const fishDef = pickFishByLevel(attempts)
@@ -86,7 +83,6 @@ export function useFishing() {
             }
 
             setFishOnLine(fish)
-            setMessage('❗')
             biteTimeRef.current = Date.now()
             hasBiteRef.current = true
 
@@ -96,7 +92,6 @@ export function useFishing() {
                 if (fishLockedRef.current) return
 
                 setFishOnLine(null)
-                setMessage("Le poisson s'est échappé...")
                 setAttempts(0)
                 setIsFishing(false)
                 hasBiteRef.current = false
@@ -115,7 +110,6 @@ export function useFishing() {
         }
 
         setIsFishing(false)
-        setMessage('Pêche annulée')
     }, [isFishing])
 
 
@@ -123,7 +117,6 @@ export function useFishing() {
     const handleKeep = useCallback(async () => {
         if (!fishOnLine || !user) return
         setSaving(true)
-        setMessage('Enregistrement du poisson...')
 
         const payload: CatchPayload = {
             model_id: fishOnLine.modelId,
@@ -134,10 +127,8 @@ export function useFishing() {
         try {
             const { error } = await fishingService.catchFish(user.id, payload)
             if (error) throw error
-            setMessage(`Poisson gardé : ${fishOnLine.size}cm (rare ${fishOnLine.rarity})`)
         } catch (err) {
             console.error(err)
-            setMessage('Erreur lors de l’enregistrement')
         } finally {
             setSaving(false)
             resetFishing()
@@ -154,7 +145,6 @@ export function useFishing() {
 
         // relâché = niveau augmente
         setAttempts(prev => prev + 1)
-        setMessage('Poisson relâché, cliquez pour relancer...')
         setFishOnLine(null)
         setIsFishing(false)
     }, [fishOnLine])
@@ -167,7 +157,6 @@ export function useFishing() {
         }
         setFishOnLine(null)
         setIsFishing(false)
-        setMessage('Pêche arrêtée.')
     }, [])
 
     useEffect(() => {
@@ -180,7 +169,6 @@ export function useFishing() {
     return {
         isFishing,
         fishOnLine,
-        message,
         saving,
         startFishing,
         handleKeep,
