@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import marie0 from '../assets/characters/marie/marie_0.png'
-import marie1 from '../assets/characters/marie/marie_1.png'
-import marie2 from '../assets/characters/marie/marie_2.png'
+import {FISHER_SKINS, getUserSkin} from "../game/skinsTable.ts";
+import {useAuth} from "../contexts/AuthContext.tsx";
 
 type Props = {
     character: string // ex: "marie"
@@ -10,28 +9,19 @@ type Props = {
 
 export default function FisherCharacter({ character, isFishing }: Props) {
     const [frame, setFrame] = useState(0)
+    const {user} = useAuth();
 
     useEffect(() => {
-        if (!isFishing) {
-            setFrame(0)
-            return
-        }
-
-        // animation simple en 3 étapes
-        setFrame(1)
-        const mid = setTimeout(() => setFrame(2), 600)
-
-        return () => clearTimeout(mid)
+        isFishing ? setFrame(1) : setFrame(0);
     }, [isFishing])
 
 
-    const frames = [marie0, marie1, marie2]
-    const src = frames[frame]
+    const frames = FISHER_SKINS[getUserSkin(user!.id)];
 
     return (
         <div>
             <img
-                src={src}
+                src={frame === 0 ? frames.idle : frames.fishing}
                 alt={`${character} fishing`}
                 style={styles.image}
                 draggable={false}
