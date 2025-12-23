@@ -46,13 +46,13 @@ export default function FishingScreen() {
         fishLockedRef.current = true
     }
 
-    const handleClosePopup = (action: 'keep' | 'release' | 'stop') => {
-        setShowPopup(false)
+    const handleClosePopup = async (action: 'keep' | 'release' | 'stop') => {
         fishLockedRef.current = false
 
-        if (action === 'keep') handleKeep()
+        if (action === 'keep') await handleKeep()
         else if (action === 'release') handleRelease()
         else if (action === 'stop') handleStop()
+        setShowPopup(false)
     }
 
     return (

@@ -58,8 +58,8 @@ export function useFishing() {
         fishLockedRef.current = false
         hasBiteRef.current = false
 
-        setIsFishing(false)
         setFishOnLine(null)
+        setIsFishing(false)
     }, [])
 
 
