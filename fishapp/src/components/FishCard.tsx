@@ -60,7 +60,6 @@ const styles: Record<string, React.CSSProperties> = {
         alignItems: 'center',
         gap: '0.5rem',
         boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-        width: 120,
     },
     image: {
         width: 80,

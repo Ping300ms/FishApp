@@ -46,19 +46,16 @@ export function useChat(userId?: string) {
             setMessages(prev => [...prev, msg])
 
             if (msg.user_id === userId) return
-
             // Charger profil si nécessaire
-            if (!profiles[msg.user_id]) {
-                const profile = await getProfile(msg.user_id)
-                if (profile) {
-                    setProfiles(prev => ({ ...prev, [msg.user_id]: profile }))
-                    // Notification
-                    await notificationService.notify(
-                        `💬 ${profile.username}`,
-                        msg.content,
-                        { tag: 'chat' }
-                    )
-                }
+            const profile = await getProfile(msg.user_id)
+            if (profile) {
+                setProfiles(prev => ({ ...prev, [msg.user_id]: profile }))
+                // Notification
+                await notificationService.notify(
+                    `💬 ${profile.username}`,
+                    msg.content,
+                    { tag: 'chat' }
+                )
             }
         })
 

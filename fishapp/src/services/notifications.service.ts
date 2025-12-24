@@ -17,13 +17,17 @@ export const notificationService = {
             tag?: string
         }
     ) {
+
         if (Notification.permission !== 'granted') return
+        console.log("granted")
         if (!('serviceWorker' in navigator)) return
+        console.log("sw")
         if (document.hasFocus()) return
+        console.log("focus")
 
         const registration = await navigator.serviceWorker.ready
 
-        registration.showNotification(title, {
+        await registration.showNotification(title, {
             body,
             icon: options?.icon ?? '/pwa-192x192.png',
             badge: options?.badge ?? '/pwa-192x192.png',

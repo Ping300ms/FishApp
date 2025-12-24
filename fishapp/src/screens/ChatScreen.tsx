@@ -2,10 +2,16 @@ import { useAuth } from '../contexts/AuthContext'
 import Message from '../components/ChatMessage.tsx'
 import { useChat } from '../hooks/useChat.ts'
 import ChatInput from '../components/ChatInput.tsx'
+import {useEffect} from "react";
+import {notificationService} from "../services/notifications.service.ts";
 
 export default function ChatScreen() {
     const { user } = useAuth()
     const { messages, profiles, sendMessage, messagesEndRef } = useChat(user?.id)
+
+    useEffect(() => {
+        notificationService.requestPermission()
+    }, [])
 
     return (
         <div style={styles.container}>
