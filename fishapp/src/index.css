@@ -1,5 +1,8 @@
+/* CSS Global Optimisé pour Mobile & Desktop */
+
 :root {
-  font-family: 'Press Start 2P', system-ui, Avenir, Helvetica, Arial, sans-serif;  line-height: 1.5;
+  font-family: 'Press Start 2P', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
@@ -10,19 +13,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+
+  overflow-x: hidden; /* Empêche les scrollbars horizontales */
   margin: 0;
   padding: 0;
 }
 
-body {
-  height: 100vh;
-  width: 100vw;
-}
-
-#root {
-  height: 100vh;
-  width: 100vw;
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  /* Hauteur adaptative selon mobile/desktop */
+  height: 100dvh;  /* "Dynamic Viewport Height" pour mobiles récents */
+  height: 100svh;  /* "Small Viewport Height" fallback */
+  height: 100vh;   /* fallback classique */
+  overflow-x: hidden;
 }
 
 .vc-init {
@@ -33,5 +38,26 @@ body {
 }
 
 .input::placeholder {
-  font-family: 'Press Start 2P', system-ui, Avenir, Helvetica, Arial, sans-serif;  line-height: 1.5;
+  font-family: 'Press Start 2P', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* Optionnel : s'assure que tous les backgrounds couvrent bien leur container */
+* {
+  box-sizing: border-box;
+}
+
+img, video, canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* Si tu veux que les images de fond collent exactement au conteneur */
+.fullscreen-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* couvre tout le container */
 }

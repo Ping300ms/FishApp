@@ -23,7 +23,6 @@ export default function LoginScreen() {
             return
         }
 
-        // ✅ Redirection après login
         navigate('/fishing', { replace: true })
     }
 
@@ -70,41 +69,56 @@ export default function LoginScreen() {
 const styles: Record<string, React.CSSProperties> = {
     container: {
         height: '100vh',
+        width: '100vw',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: '#0ea5e9'
+        fontFamily: '"Press Start 2P", monospace',
+        overflow: 'hidden'
     },
     card: {
-        background: '#fff',
+        background: '#1e293b',
         padding: '2rem',
         borderRadius: 12,
         width: 320,
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem'
+        gap: '1rem',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+        border: '2px solid #0ea5e9'
     },
     title: {
         textAlign: 'center',
-        marginBottom: '1rem'
+        marginBottom: '1rem',
+        color: '#fef3c7',
+        textShadow: '2px 2px 0 #000'
     },
     input: {
         padding: '0.75rem',
-        fontSize: '1rem',
-        borderRadius: 8,
-        border: '1px solid #ccc'
+        fontSize: '0.8rem',
+        borderRadius: 6,
+        border: '2px solid #0ea5e9',
+        background: '#1e293b',
+        color: '#fef3c7',
+        fontFamily: '"Press Start 2P", monospace',
+        outline: 'none',
+        boxShadow: 'inset 0 0 0 1px #0ea5e9',
     },
     button: {
         padding: '0.75rem',
-        fontSize: '1rem',
-        borderRadius: 8,
-        border: 'none',
+        fontSize: '0.8rem',
+        borderRadius: 6,
+        border: '2px solid #0ea5e9',
         background: '#0ea5e9',
-        color: '#fff',
-        cursor: 'pointer'
+        color: '#1e293b',
+        cursor: 'pointer',
+        fontFamily: '"Press Start 2P", monospace',
+        textTransform: 'uppercase',
+        transition: 'all 0.2s ease',
     },
     error: {
-        color: 'red',
-        fontSize: '0.9rem'
+        color: '#f87171',
+        fontSize: '0.7rem',
+        textAlign: 'center'
     }
 }
