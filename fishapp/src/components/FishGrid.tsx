@@ -55,6 +55,7 @@ const styles: Record<string, React.CSSProperties> = {
         width: '100%',
         maxWidth: 600,
         margin: '0 auto',
-        justifyItems: 'center'
+        justifyItems: 'center',
+        padding: '0 5px',
     }
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/auth.service'
+import logo from '../assets/logo.png'
 
 export default function LoginScreen() {
     const navigate = useNavigate()
@@ -29,7 +30,9 @@ export default function LoginScreen() {
     return (
         <div style={styles.container}>
             <form onSubmit={handleSubmit} style={styles.card}>
-                <h1 style={styles.title}>🎣 FishApp</h1>
+
+                <img src={logo} style={styles.logo} />
+                <h1 style={styles.title}>FishApp</h1>
 
                 <input
                     type="email"
@@ -120,5 +123,10 @@ const styles: Record<string, React.CSSProperties> = {
         color: '#f87171',
         fontSize: '0.7rem',
         textAlign: 'center'
+    },
+    logo: {
+        imageRendering: "pixelated",
+        width: 150,
+        alignSelf: 'center'
     }
 }
