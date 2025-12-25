@@ -62,7 +62,7 @@ export function useChat(userId?: string) {
         return () => {
             supabase.removeChannel(channel)
         }
-    }, [userId, profiles])
+    }, [userId])
 
     // Envoyer un message
     const sendMessage = useCallback(async (content: string) => {

@@ -8,6 +8,7 @@ import sprite5 from '../assets/fish/5.png'
 import sprite6 from '../assets/fish/6.png'
 import sprite7 from '../assets/fish/7.png'
 import sprite8 from '../assets/fish/8.png'
+import sprite9 from '../assets/fish/9.png'
 
 type Props = {
     model: number
@@ -17,7 +18,7 @@ type Props = {
 }
 
 export default function FishCard({ model, size, rarity, discovered }: Props) {
-    const frames = [sprite0, sprite1, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8]
+    const frames = [sprite0, sprite1, sprite2, sprite3, sprite4, sprite5, sprite6, sprite7, sprite8, sprite9]
     const src = frames[model % frames.length]
 
     return (

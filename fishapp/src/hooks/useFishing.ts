@@ -14,7 +14,10 @@ export function useFishing() {
     const { user } = useAuth()
     const [isFishing, setIsFishing] = useState(false)
     const [fishOnLine, setFishOnLine] = useState<Fish | null>(null)
-    const [attempts, setAttempts] = useState(0)
+    const [attempts, setAttempts] = useState(() => {
+        const saved = localStorage.getItem('fishing_attempts')
+        return saved ? Number(saved) : 0
+    })
     const [saving, setSaving] = useState(false)
 
     const biteTimeRef = useRef<number>(0)
@@ -26,6 +29,11 @@ export function useFishing() {
     function lerp(a: number, b: number, t: number) {
         return a + (b - a) * t
     }
+
+    useEffect(() => {
+        localStorage.setItem('fishing_attempts', String(attempts))
+    }, [attempts])
+
 
     function pickFishByLevel(level: number) {
         const progress = Math.min(level / 20, 1) // niveau 20 = cap

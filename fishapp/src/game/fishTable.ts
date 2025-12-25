@@ -19,6 +19,7 @@ export const FISH_TABLE: FishDefinition[] = [
     { id: 8, modelId: 7, rarity: 4, baseWeight: 3},
 
     { id: 9, modelId: 8, rarity: 5, baseWeight: 1},
+    { id: 10, modelId: 9, rarity: 5, baseWeight: 1},
     // … jusqu’à 15 poissons
 ]
 
@@ -27,7 +28,7 @@ export const CAPTURE_WINDOW_BY_RARITY: Record<1 | 2 | 3 | 4 | 5, number> = {
     2: 1000,
     3: 800,
     4: 600,
-    5: 400   // légendaire → très tendu mais faisable
+    5: 500   // légendaire → très tendu mais faisable
 }
 
 

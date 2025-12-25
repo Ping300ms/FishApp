@@ -2,15 +2,15 @@
 
 import marie0 from '../assets/characters/marie/marie_0.png'
 import marie1 from '../assets/characters/marie/marie_1.png'
-import sandrine0 from '../assets/characters/sandrine/sandrine_1.png'
-import sandrine1 from '../assets/characters/sandrine/sandrine_0.png'
-import thierry0 from '../assets/characters/thierry/thierry_1.png'
-import thierry1 from '../assets/characters/thierry/thierry_0.png'
+import sandrine0 from '../assets/characters/sandrine/sandrine_0.png'
+import sandrine1 from '../assets/characters/sandrine/sandrine_1.png'
+import thierry0 from '../assets/characters/thierry/thierry_0.png'
+import thierry1 from '../assets/characters/thierry/thierry_1.png'
 import ghislaine0 from '../assets/characters/ghislaine/ghislaine_0.png'
 import ghislaine1 from '../assets/characters/ghislaine/ghislaine_1.png'
 import stephane0 from '../assets/characters/stephane/stephane_0.png'
 import stephane1 from '../assets/characters/stephane/stephane_1.png'
-import jean0 from '../assets/characters/jean/jean_0.png'
+import jean0 from '../assets/characters/jean/jean_0.gif'
 import jean1 from '../assets/characters/jean/jean_1.png'
 
 
